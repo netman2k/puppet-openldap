@@ -12,7 +12,11 @@ Puppet::Type.
   mk_resource_methods
 
   def self.instances
-    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)(&(objectClass=olcDatabaseConfig)(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)(objectClass=olcDbPerlConfig))))")
+    databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)\
+    (&(objectClass=olcDatabaseConfig)\(|(objectClass=olcBdbConfig)\
+    (objectClass=olcHdbConfig)(objectClass=olcMdbConfig)\
+    (objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)\
+    (objectClass=olcFrontendConfig)(objectClass=olcDbPerlConfig))))")
 
     databases.split("\n\n").collect do |paragraph|
       suffix = nil
@@ -20,8 +24,6 @@ Puppet::Type.
       index = nil
       backend = nil
       directory = nil
-      perl_module_path = nil
-      perl_module = nil
       rootdn = nil
       rootpw = nil
       readonly = nil
