@@ -22,7 +22,7 @@ Puppet::Type.newtype(:openldap_database) do
 
   newproperty(:backend) do
     desc "The name of the backend."
-    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'perl')
+    newvalues('bdb', 'hdb', 'mdb', 'monitor', 'config', 'relay', 'perl', 'frontend')
     defaultto do
       case Facter.value(:osfamily)
       when 'Debian'
@@ -134,7 +134,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if [ "perl" ].include? "#{@resource[:backend]}"
+      if [ "perl","frontend" ].include? "#{@resource[:backend]}"
         :false
       else
         :true
