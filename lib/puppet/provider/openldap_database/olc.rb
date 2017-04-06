@@ -13,10 +13,10 @@ Puppet::Type.
 
   def self.instances
     databases = slapcat("(|(olcDatabase=monitor)(olcDatabase={0}config)\
-(&(objectClass=olcDatabaseConfig)\(|(objectClass=olcBdbConfig)\
-(objectClass=olcHdbConfig)(objectClass=olcMdbConfig)\
-(objectClass=olcMonitorConfig)(objectClass=olcRelayConfig)\
-(objectClass=olcFrontendConfig)(objectClass=olcDbPerlConfig))))")
+(olcDatabase={-1}frontend)(&(objectClass=olcDatabaseConfig)\
+(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig)\
+(objectClass=olcMdbConfig)(objectClass=olcMonitorConfig)\
+(objectClass=olcRelayConfig)(objectClass=olcDbPerlConfig))))")
 
     databases.split("\n\n").collect do |paragraph|
       suffix = nil

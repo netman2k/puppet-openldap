@@ -121,7 +121,7 @@ Puppet::Type.newtype(:openldap_database) do
 
     newvalues(:true, :false)
     defaultto do
-      if [ "monitor" , "config", "relay", "perl" ].include? "#{@resource[:backend]}"
+      if [ "monitor" , "config", "relay", "perl", 'frontend' ].include? "#{@resource[:backend]}"
         :false
       else
         :true
