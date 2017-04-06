@@ -36,6 +36,7 @@ define openldap::server::database(
     'config'  => undef,
     'relay'   => undef,
     'perl'    => undef,
+    'frontend'=> undef,
     default   => $directory ? {
       undef   => '/var/lib/ldap',
       default => $directory,
