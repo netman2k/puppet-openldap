@@ -114,9 +114,10 @@ Puppet::Type.
         suffix = 'cn=config'
       end
       if backend == 'frontend' and !suffix
-        # Fake suffix - frontend database does not support suffix
-        # Refer to 5.2.5.7. olcSuffix in 
-        # OpenLDAP Software 2.4 Administrator's Guide
+        # NOTE:
+        # 5.2.5.7. olcSuffix in OpenLDAP Software 2.4 Administrator's Guide
+        # frontend and monitor use a hard-coded suffix which may not 
+        # be overridden in the configuration.
         suffix = 'frontend'
       end
       new(
@@ -262,8 +263,9 @@ Puppet::Type.
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when "monitor"
       # WRITE HERE FOR MONITOR ONLY
-    when "frontend"
+    when 'frontend'
       # WRITE HERE FOR FRONTEND ONLY
+      # frontend can set few options only such as security and access
     else
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
