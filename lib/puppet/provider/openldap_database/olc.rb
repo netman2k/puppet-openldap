@@ -114,7 +114,10 @@ Puppet::Type.
         suffix = 'cn=config'
       end
       if backend == 'frontend' and !suffix
-        suffix = 'cn=config'
+        # Fake suffix - frontend database does not support suffix
+        # Refer to 5.2.5.7. olcSuffix in 
+        # OpenLDAP Software 2.4 Administrator's Guide
+        suffix = 'frontend'
       end
       new(
         :ensure          => :present,
