@@ -39,7 +39,7 @@ Puppet::Type.
       paragraph.gsub("\n ", "").split("\n").collect do |line|
         case line
         when /^olcDatabase: /
-          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|perl)$/).captures
+          index, backend = line.match(/^olcDatabase: \{(\d+)\}(bdb|hdb|mdb|monitor|config|relay|perl|frontend)$/).captures
         when /^olcDbDirectory: /
           directory = line.split(' ')[1]
         when /^olcPerlModulePath: /
@@ -109,6 +109,9 @@ Puppet::Type.
         suffix = 'cn=monitor'
       end
       if backend == 'config' and !suffix
+        suffix = 'cn=config'
+      end
+      if backend == 'frontend' and !suffix
         suffix = 'cn=config'
       end
       new(
@@ -254,6 +257,8 @@ Puppet::Type.
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when "monitor"
       # WRITE HERE FOR MONITOR ONLY
+    when "frontend"
+      # WRITE HERE FOR FRONTEND ONLY
     else
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
