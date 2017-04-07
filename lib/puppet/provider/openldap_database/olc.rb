@@ -263,6 +263,8 @@ Puppet::Type.
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
     when "monitor"
       # WRITE HERE FOR MONITOR ONLY
+    when "perl"
+      # WRITE HERE FOR MONITOR ONLY      
     when 'frontend'
       # WRITE HERE FOR FRONTEND ONLY
       # frontend can set few options only such as security and access
@@ -270,6 +272,17 @@ Puppet::Type.
       t << "olcDbDirectory: #{resource[:directory]}\n" if resource[:directory]
       t << "olcSuffix: #{resource[:suffix]}\n" if resource[:suffix]
       t << "olcDbIndex: objectClass eq\n" if !resource[:dboptions] or !resource[:dboptions]['index']
+      t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
+      t << "olcAccess: to attrs=userPassword\n"
+      t << "  by self write\n"
+      t << "  by anonymous auth\n"
+      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+      t << "  by * none\n"
+      t << "olcAccess: to dn.base=\"\" by * read\n"
+      t << "olcAccess: to *\n"
+      t << "  by self write\n"
+      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
+      t << "  by * read\n"      
     end
     t << "olcRootDN: #{resource[:rootdn]}\n" if resource[:rootdn]
     t << "olcRootPW: #{resource[:rootpw]}\n" if resource[:rootpw]
@@ -301,19 +314,6 @@ Puppet::Type.
     t << "olcSyncUseSubentry: #{resource[:syncusesubentry]}\n" if resource[:syncusesubentry]
     t << "#{resource[:limits].collect { |x| "olcLimits: #{x}" }.join("\n")}\n" if resource[:limits] and !resource[:limits].empty?
     t << "#{resource[:security].collect { |k, v| "olcSecurity: #{k}=#{v}" }.join("\n")}\n" if resource[:security] and !resource[:security].empty?
-    if resource[:initacl]
-      t << "olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break\n"
-      t << "olcAccess: to attrs=userPassword\n"
-      t << "  by self write\n"
-      t << "  by anonymous auth\n"
-      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-      t << "  by * none\n"
-      t << "olcAccess: to dn.base=\"\" by * read\n"
-      t << "olcAccess: to *\n"
-      t << "  by self write\n"
-      t << "  by dn=\"cn=admin,#{resource[:suffix]}\" write\n"
-      t << "  by * read\n"
-    end
     t.close
     Puppet.debug(IO.read t.path)
     begin
@@ -339,10 +339,6 @@ Puppet::Type.
 
   def directory=(value)
     @property_flush[:directory] = value
-  end
-
-  def initacl=(value)
-    @property_flush[:initacl] = value
   end
 
   def perl_options=(value)
