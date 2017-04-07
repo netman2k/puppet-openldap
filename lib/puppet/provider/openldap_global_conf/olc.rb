@@ -52,11 +52,7 @@ Puppet::Type.
   end
 
   def exists?
-    if resource[:value].is_a? Hash
-      (resource[:value].keys - self.class.instances.map { |item| item.name }).empty?
-    else
-      @property_hash[:ensure] == :present
-    end
+    @property_hash[:ensure] == :present
   end
 
   def create
